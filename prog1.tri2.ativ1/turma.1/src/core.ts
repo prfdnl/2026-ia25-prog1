@@ -42,6 +42,10 @@ class TodoList {
    * Função que adiciona um novo item a lista
    */
   async addItem(item: Item) {
+    if (!item) 
+      throw "Item inválido"
+    if (!item.title.trim())
+      throw "Item deve conter um título"
     this.items.push(item)
     await this.saveListToDisk()
   }
@@ -61,3 +65,6 @@ class TodoList {
     return Array.from(this.items)
   }
 }
+
+export default TodoList
+export { TodoList, Item }
