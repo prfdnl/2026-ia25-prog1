@@ -44,6 +44,10 @@ class TodoList {
    * Adiciona um novo item na lista de item
    */
   async addItem(item: Item) {
+    if (!item) 
+      throw 'item não pode ser nulo ou indefinido'
+    if (!item.title || !item.title.trim()) 
+      throw 'item.title não pode ser nulo ou indefinido'
     this.items.push(item)
     await this.saveListToDisk()
   }
@@ -63,3 +67,6 @@ class TodoList {
     return Array.from(this.items)
   }
 }
+
+export default TodoList
+export { Item, TodoList }
