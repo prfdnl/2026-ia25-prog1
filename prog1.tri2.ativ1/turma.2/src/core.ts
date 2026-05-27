@@ -1,3 +1,6 @@
+
+// Lydia Hallie : Event Loop
+
 /**
  * @todo
  * known issues:
@@ -16,17 +19,19 @@ class Item {
 }
 
 class TodoList {
-  private items: Item[] = []
+  private items: Promise<Item[]>
   private filePath: string
 
   constructor(filePath: string) {
     this.filePath = filePath
-    this.readListFromDisk()
+    this.items = this.readListFromDisk()
   }
 
   private async saveListToDisk() {
+    console.log('Salvando lista no disco...')
     const file = Bun.file(this.filePath)
-    const data = JSON.stringify(this.items)
+    const data = JSON.stringify(await this.items)
+    console.log('Dados a serem salvos:', data)
     await file.write(data)
   }
 
@@ -35,20 +40,22 @@ class TodoList {
     // const text = await file.text()
     // const data = JSON.parse(text)
     const data = await file.json()
-    this.items = data.map((v: any) => {
+    const items: Item[] = data.map((v: any) => {
       return new Item(v.title)
     })
+    return items
   }
 
   /**
    * Adiciona um novo item na lista de item
    */
   async addItem(item: Item) {
+    const items = await this.items
     if (!item) 
       throw 'item não pode ser nulo ou indefinido'
     if (!item.title || !item.title.trim()) 
       throw 'item.title não pode ser nulo ou indefinido'
-    this.items.push(item)
+    items.push(item)
     await this.saveListToDisk()
   }
 
@@ -56,15 +63,17 @@ class TodoList {
    * Remove um item da lista de item pelo indice
    */
   async removeItem(index: number) {
-    this.items.splice(index, 1)
+    const items = await this.items
+    items.splice(index, 1)
     await this.saveListToDisk()
   }
 
   /**
    * Retona uma cópia da lista de itens
    */
-  getItems() {
-    return Array.from(this.items)
+  async getItems() {
+    const items = await this.items
+    return Array.from(items)
   }
 }
 
