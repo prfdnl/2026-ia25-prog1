@@ -10,6 +10,26 @@ const params = process.argv
 const command = params[2]
 
 // ------------------------------------------------------------------------------
+// --- Comando List
+// ------------------------------------------------------------------------------
+
+if (command === "list") {
+    const items = await todolist.getItems()
+    console.log("Lista de itens:")
+
+    // for (let index = 0; index < items.length; index++) {
+    //     const item = items[index] as Item
+    //     console.log(`${index}: ${item.title}`)
+    // }
+
+    items.forEach((item, index) => {
+        console.log(`${index}: ${item.title}`)
+    })
+
+    process.exit(0)
+}
+
+// ------------------------------------------------------------------------------
 // --- Comando Add
 // ------------------------------------------------------------------------------
 
@@ -29,6 +49,26 @@ if (command === "add") {
     }
 
     console.log(`Item "${value}" adicionado com sucesso!`)
+    process.exit(0)
+}
+
+// ------------------------------------------------------------------------------
+// --- Comando Remove
+// ------------------------------------------------------------------------------
+
+if (command === "remove") {
+    const indexStr = params[3]
+    if (!indexStr) {
+        console.error("Índice do item é obrigatório")
+        process.exit(1)
+    }
+    const index = parseInt(indexStr)
+    if (isNaN(index)) {
+        console.error("Índice inválido, precisa ser um número inteiro")
+        process.exit(1)
+    }
+    await todolist.removeItem(index)
+    console.log(`Item no índice ${index} removido com sucesso!`)
     process.exit(0)
 }
 
