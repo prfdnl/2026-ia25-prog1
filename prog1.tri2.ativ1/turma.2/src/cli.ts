@@ -6,7 +6,6 @@
 
 import TodoListApelido, { Item } from './core'
 
-
 const todolist = new TodoListApelido('todolist.json')
 const params = process.argv
 const command = params[2]
@@ -60,15 +59,19 @@ if (command === 'add') {
 
 if (command === 'remove') {
     const indexStr = params[3]
+    
     if (!indexStr) {
         console.error('Índice do item a ser removido não pode ser nulo ou vazio')
         process.exit(1)
     }
+
     const index = parseInt(indexStr)
+    
     if (isNaN(index)) {
         console.error('Índice precisa ser um número:', indexStr)
         process.exit(1)
     }
+    
     await todolist.removeItem(index)
     console.log('Item removido com sucesso:', index)
     process.exit(0)
