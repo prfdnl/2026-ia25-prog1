@@ -1,4 +1,3 @@
-"strict mode";
 // CLI: Command Line Interface
 
 // import Xpto from './core'
@@ -18,7 +17,17 @@ const command = params[2]
 
 if (command === 'list') {
     const items = await todolist.getItems()
-    console.log(items)
+    console.log('Lista:')
+    
+    // for (let index = 0; index < items.length; index++) {
+    //     const item = items[index] as Item
+    //     console.log(`${index}: ${item.title}`)
+    // }
+
+    items.forEach((item, index) => {
+        console.log(`${index}: ${item.title}`)
+    })
+
     process.exit(0)
 }
 
@@ -45,6 +54,26 @@ if (command === 'add') {
     process.exit(0)
 }
  
+// ------------------------------------------------------------------------------
+// --- Comando Remove
+// ------------------------------------------------------------------------------
+
+if (command === 'remove') {
+    const indexStr = params[3]
+    if (!indexStr) {
+        console.error('Índice do item a ser removido não pode ser nulo ou vazio')
+        process.exit(1)
+    }
+    const index = parseInt(indexStr)
+    if (isNaN(index)) {
+        console.error('Índice precisa ser um número:', indexStr)
+        process.exit(1)
+    }
+    await todolist.removeItem(index)
+    console.log('Item removido com sucesso:', index)
+    process.exit(0)
+}
+
 // ------------------------------------------------------------------------------
 // --- Fallback para comandos não reconhecidos
 // ------------------------------------------------------------------------------

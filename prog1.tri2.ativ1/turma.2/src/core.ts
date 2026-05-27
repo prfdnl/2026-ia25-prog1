@@ -28,10 +28,8 @@ class TodoList {
   }
 
   private async saveListToDisk() {
-    console.log('Salvando lista no disco...')
     const file = Bun.file(this.filePath)
     const data = JSON.stringify(await this.items)
-    console.log('Dados a serem salvos:', data)
     await file.write(data)
   }
 
