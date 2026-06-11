@@ -47,6 +47,16 @@ const server = Bun.serve({
 
         return new Response('Created', { status: 201 })
       }
+    },
+    '/todo/:index': {
+      DELETE: (req) => {
+        const strIndex = req.params.index
+        const index = parseInt(strIndex)
+        if (isNaN(index)) 
+          return new Response('/todo/:index index precisa ser um número inteiro', { status: 400 })
+        todolist.removeItem(index)
+        return new Response(`Item do index ${index} removido.`)
+      }
     }
   },
   fetch(req) {
