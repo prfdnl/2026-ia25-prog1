@@ -36,7 +36,7 @@ const server = Bun.serve({
           return new Response('json inválido', { status: 400 })
         }
 
-        if (!data.title) 
+        if (!data?.title) 
           return new Response('É preciso informar title', { status: 400 })
 
         try {
