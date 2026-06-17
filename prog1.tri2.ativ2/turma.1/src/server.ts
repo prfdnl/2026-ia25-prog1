@@ -12,15 +12,9 @@ async function testRoute(req: Bun.BunRequest) {
 const server = Bun.serve({
   port: 3000,
   routes: {
+    '/': (req) => new Response(Bun.file('./public/index.html')),
     '/api-debugger': (req) => new Response(Bun.file('./public/api-debugger.html')),
-    '/test': {
-      GET: testRoute,
-      POST: testRoute,
-      PUT: testRoute,
-      DELETE: testRoute,
-      PATCH: testRoute,
-      OPTIONS: testRoute,
-    },
+    '/test':  testRoute,
     '/todo': {
       GET: async () => {
         const items = await todolist.getItems()
@@ -49,6 +43,9 @@ const server = Bun.serve({
       }
     },
     '/todo/:index': {
+      GET: (req) => {
+        return new Response("Not implemented yet!", { status: 501 })
+      },
       DELETE: (req) => {
         const strIndex = req.params.index
         const index = parseInt(strIndex)
