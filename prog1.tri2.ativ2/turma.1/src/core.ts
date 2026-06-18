@@ -44,12 +44,13 @@ class TodoList {
    */
   async addItem(item: Item) {
     const items = await this.items
-    if (!item) 
+    if (!item)
       throw "Item inválido"
     if (!item.title.trim())
       throw "Item deve conter um título"
     items.push(item)
     await this.saveListToDisk()
+    return items.length - 1
   }
 
   /**
@@ -57,6 +58,8 @@ class TodoList {
    */
   async removeItem(index: number) {
     const items = await this.items
+    if (!items[index]) 
+      throw `Item de index ${index} não existe`
     items.splice(index, 1)
     await this.saveListToDisk()
   }

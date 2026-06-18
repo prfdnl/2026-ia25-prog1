@@ -12,7 +12,17 @@
       const elTitle = clone.querySelector('span')
       const elBtDelete = clone.querySelector('button')
       elTitle.innerText = title
-      elBtDelete.dataset.index = index // abre uma brecha gigantesca pra HACKING
+      // elBtDelete.dataset.index = index // abre uma brecha gigantesca pra HACKING
+      elBtDelete.addEventListener('click', async () => {
+        elBtDelete.setAttribute("disabled", true)
+        const request = await fetch(`/todo/${index}`, { method: "DELETE" })
+        if (request.ok)
+          return elBtDelete.closest('li').remove()
+        // caso de erro
+        elBtDelete.removeAttribute("disabled")
+        const resp = await request.text()
+        alert(`Erro: ${resp}`)
+      })
       elItemTemplate.parentElement.append(clone)
     }
 
@@ -32,8 +42,9 @@
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ title })
       })
+      const { index } = await request.json()
       elCreateForm.fields.removeAttribute('disabled')
-      createItemElement(-1, title)
+      createItemElement(index, title)
       elCreateForm.elTite.value = ''
     })
 
