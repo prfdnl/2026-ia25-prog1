@@ -14,11 +14,20 @@
       const elTitle = elClone.querySelector('span')
       const elDelButton = elClone.querySelector('button')
       elTitle.innerText = title
-      elDelButton.dataset.id = index // abre brecha pra um HACKIN danado!
+      // elDelButton.dataset.id = index // abre brecha pra um HACKIN danado!
+      elDelButton.addEventListener('click', async () => {
+        elDelButton.setAttribute('disabled', true)
+        const response = await fetch(`/todo/${index}`, { method: "DELETE" })
+        if (response.ok) 
+          return elDelButton.closest('li').remove()
+        elDelButton.removeAttribute('disabled')
+        const msg = await response.text()
+        alert(`Erro: ${msg}`)
+      })
       itemTemplate.parentElement.append(elClone)
     }
 
-    void async function() {
+    void async function () {
       const response = await fetch('/todo')
       const items = await response.json()
       items.forEach((item, index) => createElementItem(index, item.title))
@@ -26,17 +35,16 @@
 
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault()
-      form.fieldset.setAttribute('disabled', true)
       const title = form.title.value
-      if (title.trim() === '')
-        return
+      if (title.trim() === '') return
+      form.fieldset.setAttribute('disabled', true)
       const response = await fetch('/todo', {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ title })
       })
-      // const item = await response.json()
-      createElementItem(-1, title)
+      const item = await response.json()
+      createElementItem(item.index, title)
       form.title.value = ''
       form.fieldset.removeAttribute('disabled')
     })
@@ -54,8 +62,8 @@
   <ul>
     <template id="itemTemplate">
       <li>
-        <span>...</span>
         <button>del</button>
+        <span>...</span>
       </li>
     </template>
   </ul>

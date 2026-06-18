@@ -6,6 +6,7 @@ async function requestTest(req: Bun.BunRequest) {
         method: req.method,
         time: new Date().toLocaleString('pt-BR'),
         body: await req.body?.text(),
+        key: crypto.randomUUID()
     });
 }
 
@@ -32,13 +33,15 @@ const server = Bun.serve({
                 if (!data?.title)
                     return new Response('É preciso informar title', { status: 400 })
 
+                let index: number
+
                 try {
-                    await todolist.addItem(new Item(data.title))
+                    index = await todolist.addItem(new Item(data.title))
                 } catch (error) {
                     return new Response('Erro ao adicionar item', { status: 500 })
                 }
 
-                return new Response('Created', { status: 201 })
+                return Response.json({ index }, { status: 201 })
             }
         },
         '/todo/:index': {
@@ -51,7 +54,11 @@ const server = Bun.serve({
                 const index = parseInt(indexStr)
                 if (isNaN(index))
                     return new Response('index precisa ser um número inteiro', { status: 400 })
-                await todolist.removeItem(index)
+                try {
+                    await todolist.removeItem(index)
+                } catch(e) {
+                    return Response.json(e, { status: 400 })
+                }
                 return new Response(`Item de indice ${index}, removido com sucesso`)
             }
         }

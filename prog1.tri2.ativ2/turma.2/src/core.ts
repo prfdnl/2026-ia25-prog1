@@ -55,6 +55,7 @@ class TodoList {
       throw 'item.title não pode ser nulo ou indefinido'
     items.push(item)
     await this.saveListToDisk()
+    return items.length - 1
   }
 
   /**
@@ -62,6 +63,8 @@ class TodoList {
    */
   async removeItem(index: number) {
     const items = await this.items
+    if (!items[index])
+      throw `Não foi possível remover o item de indice ${index}, pois ele não existe`
     items.splice(index, 1)
     await this.saveListToDisk()
   }
